@@ -425,6 +425,7 @@ export function CBIRSection({ initial }: { initial: Initial }) {
           >
             <div className="relative h-56 w-full overflow-hidden bg-gray-200">
               <Image
+                unoptimized
                 src={carro.imagen}
                 alt={`${carro.marca} ${carro.modelo}`}
                 fill
@@ -483,6 +484,7 @@ export function CBIRSection({ initial }: { initial: Initial }) {
             </button>
             <div className="relative w-full h-full">
               <Image
+                unoptimized
                 src={selectedImage}
                 alt="Vista ampliada"
                 width={1200}
