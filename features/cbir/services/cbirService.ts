@@ -1,12 +1,16 @@
 import type { CBIRResponse, CBIRSearchParams, CBIRMetricsResponse } from "../types/cbirTypes";
 
-const BACKEND_URL = "https://scbir-python-backend.onrender.com";
+const BACKEND_V12_URL = "https://scbir-python-backend.onrender.com"; // Render (v1 y v2)
+const BACKEND_V3_URL = "https://computative-nonalphabetical-hanna.ngrok-free.dev"; // ngrok (v3)
 
 export const cbirService = {
   async checkHealth(): Promise<boolean> {
     try {
-      const res = await fetch(`${BACKEND_URL}/health`, { method: "GET" });
-      return res.ok;
+      const [res12, res3] = await Promise.all([
+        fetch(`${BACKEND_V12_URL}/health`, { method: "GET" }),
+        fetch(`${BACKEND_V3_URL}/health`, { method: "GET" }),
+      ]);
+      return res12.ok && res3.ok;
     } catch {
       return false;
     }
@@ -18,17 +22,17 @@ export const cbirService = {
     fd.append("threshold", String(params.threshold));
     fd.append("top_k", String(params.topK));
 
-    // Parámetros específicos de V3
     if (params.version === "v3") {
-      if (params.metrica) {
-        fd.append("metrica", params.metrica);
-      }
+      if (params.metrica) fd.append("metrica", params.metrica);
       if (params.pesoColor !== undefined) {
         fd.append("peso_color", String(params.pesoColor));
       }
     }
 
-    const endpoint = `${BACKEND_URL}/cbir/search/${params.version}`;
+    const baseUrl =
+      params.version === "v3" ? BACKEND_V3_URL : BACKEND_V12_URL;
+
+    const endpoint = `${baseUrl}/cbir/search/${params.version}`;
     const response = await fetch(endpoint, {
       method: "POST",
       body: fd,
@@ -41,7 +45,9 @@ export const cbirService = {
     return response.json();
   },
 
-  async searchWithMetrics(params: Omit<CBIRSearchParams, "metrica">): Promise<CBIRMetricsResponse> {
+  async searchWithMetrics(
+    params: Omit<CBIRSearchParams, "metrica">
+  ): Promise<CBIRMetricsResponse> {
     if (params.version !== "v3") {
       throw new Error("searchWithMetrics solo está disponible para V3");
     }
@@ -50,12 +56,11 @@ export const cbirService = {
     fd.append("file", params.file);
     fd.append("threshold", String(params.threshold));
     fd.append("top_k", String(params.topK));
-
     if (params.pesoColor !== undefined) {
       fd.append("peso_color", String(params.pesoColor));
     }
 
-    const endpoint = `${BACKEND_URL}/cbir/search/v3/metrics`;
+    const endpoint = `${BACKEND_V3_URL}/cbir/search/v3/metrics`;
     const response = await fetch(endpoint, {
       method: "POST",
       body: fd,
