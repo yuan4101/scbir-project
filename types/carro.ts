@@ -1,3 +1,4 @@
+// Entidad base de un carro de la base de datos
 export interface Carro {
   id: number;
   marca: string;
@@ -9,7 +10,3 @@ export interface Carro {
   vector_caracteristicas_v2: number[];
   url: string;
 }
-
-export type CarroConSimilitud = Carro & {
-  similarity?: number;
-};

@@ -1,6 +1,10 @@
-// app/page.tsx (Server Component por defecto)
 import { getCarros } from "@/lib/services/carros";
-import { CBIRSection } from "@/features/cbir/components/CBIRSection";
+import { CBIRSection } from "@/features/cbir";
+import { HeroSection } from "@/components/home/HeroSection";
+import { StatsSection } from "@/components/home/StatsSection";
+import { CatalogHeader } from "@/components/home/CatalogHeader";
+import { InfoSection } from "@/components/home/InfoSection";
+import { CTASection } from "@/components/home/CTASection";
 
 interface PageProps {
   searchParams: Promise<{ page?: string }>;
@@ -17,22 +21,20 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600 pb-2 leading-tight">
-            Catálogo de Vehículos
-          </h1>
-          <p className="text-gray-600 text-lg mt-2">
-            {total} vehículos disponibles
-          </p>
-        </div>
+      <HeroSection />
+      <StatsSection totalVehicles={total} />
 
-        {/* La key fuerza el remount cuando cambia la página */}
+      <CatalogHeader currentPage={currentPage} total={total} />
+
+      <div className="container mx-auto px-4">
         <CBIRSection
           key={currentPage}
           initial={{ carros, total, totalPages, currentPage }}
         />
       </div>
+
+      <InfoSection />
+      <CTASection />
     </main>
   );
 }
