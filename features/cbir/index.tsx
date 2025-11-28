@@ -10,17 +10,23 @@ import { useCBIRSearch } from "./hooks/useCBIRSearch";
 import { useCarroDetail } from "@/features/catalogo/hooks/useCarroDetail";
 import { useCatalogo } from "@/features/catalogo/hooks/useCatalogo";
 import type { CatalogoData } from "@/features/catalogo/types/catalogoTypes";
-import type { CBIRVersion } from "./types/cbirTypes";
-import { CBIR_VERSIONS } from "./constants/versions";
+import type { CBIRVersion, CBIRMetric } from "./types/cbirTypes";
+import {
+  CBIR_VERSIONS,
+  DEFAULT_METRICA,
+  DEFAULT_PESO_COLOR,
+} from "./constants/versions";
 
 interface CBIRSectionProps {
   initial: CatalogoData;
 }
 
 export function CBIRSection({ initial }: CBIRSectionProps) {
-  const [threshold, setThreshold] = useState(0.8);
-  const [topK, setTopK] = useState(10);
+  const [threshold, setThreshold] = useState(0.3);
+  const [topK, setTopK] = useState(12);
   const [selectedVersion, setSelectedVersion] = useState<CBIRVersion>("v1");
+  const [metrica, setMetrica] = useState<CBIRMetric>(DEFAULT_METRICA);
+  const [pesoColor, setPesoColor] = useState(DEFAULT_PESO_COLOR);
 
   const imageUpload = useImageUpload();
   const cbirSearch = useCBIRSearch();
@@ -38,6 +44,8 @@ export function CBIRSection({ initial }: CBIRSectionProps) {
       threshold,
       topK,
       version: selectedVersion,
+      metrica: selectedVersion === "v3" ? metrica : undefined,
+      pesoColor: selectedVersion === "v3" ? pesoColor : undefined,
     });
 
     if (result) {
@@ -77,9 +85,13 @@ export function CBIRSection({ initial }: CBIRSectionProps) {
         topK={topK}
         version={selectedVersion}
         versionInfo={CBIR_VERSIONS[selectedVersion]}
+        metrica={metrica}
+        pesoColor={pesoColor}
         onThresholdChange={setThreshold}
         onTopKChange={setTopK}
         onVersionChange={setSelectedVersion}
+        onMetricaChange={setMetrica}
+        onPesoColorChange={setPesoColor}
         showReset={isCBIRMode}
         onReset={handleReset}
         uploadError={imageUpload.error}

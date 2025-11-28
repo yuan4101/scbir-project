@@ -3,17 +3,25 @@
 import { ChartBarIcon } from "@/components/icons/ChartBarIcon";
 import { MenuIcon } from "@/components/icons/MenuIcon";
 import { MonitorIcon } from "@/components/icons/MonitorIcon";
-import type { CBIRVersion, CBIRVersionInfo } from "../types/cbirTypes";
-import { CBIR_VERSIONS } from "../constants/versions";
+import type {
+  CBIRVersion,
+  CBIRVersionInfo,
+  CBIRMetric,
+} from "../types/cbirTypes";
+import { CBIR_VERSIONS, CBIR_METRICS } from "../constants/versions";
 
 interface CBIRControlsProps {
   threshold: number;
   topK: number;
   selectedVersion: CBIRVersion;
   versionInfo: CBIRVersionInfo;
+  metrica?: CBIRMetric;
+  pesoColor?: number;
   onThresholdChange: (value: number) => void;
   onTopKChange: (value: number) => void;
   onVersionChange: (version: CBIRVersion) => void;
+  onMetricaChange?: (metrica: CBIRMetric) => void;
+  onPesoColorChange?: (peso: number) => void;
 }
 
 export function CBIRControls({
@@ -21,11 +29,16 @@ export function CBIRControls({
   topK,
   selectedVersion,
   versionInfo,
+  metrica = "euclidean",
+  pesoColor = 0.7,
   onThresholdChange,
   onTopKChange,
   onVersionChange,
+  onMetricaChange,
+  onPesoColorChange,
 }: CBIRControlsProps) {
   const versions = Object.values(CBIR_VERSIONS);
+  const pesoTextura = 1 - pesoColor;
 
   return (
     <div className="mt-4 space-y-4">
@@ -118,6 +131,62 @@ export function CBIRControls({
           </p>
         </div>
       </div>
+
+      {/* Controles específicos para V3 */}
+      {selectedVersion === "v3" && onMetricaChange && onPesoColorChange && (
+        <div className="bg-linear-to-r from-purple-50 to-indigo-50 p-5 rounded-xl border border-purple-200">
+          <h4 className="text-sm font-semibold text-purple-800 mb-4 flex items-center gap-2">
+            ⚙️ Configuración Avanzada V3
+          </h4>
+
+          {/* Selector de métrica - CORREGIDO */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-purple-700 mb-2">
+              Métrica de distancia
+            </label>
+            <select
+              value={metrica}
+              onChange={(e) => onMetricaChange!(e.target.value as CBIRMetric)}
+              className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl text-sm font-medium text-purple-800 bg-white/80 shadow-sm hover:border-purple-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-100/50 focus:outline-none transition-all duration-200"
+            >
+              {Object.entries(CBIR_METRICS).map(([key, metric]) => (
+                <option key={key} value={key} className="text-purple-900">
+                  {metric.name} - {metric.description}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Control de pesos */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-medium text-purple-700">
+                Balance Color/Textura
+              </label>
+              <span className="text-xs font-semibold text-purple-800">
+                Color: {(pesoColor! * 100).toFixed(0)}% | Textura:{" "}
+                {(pesoTextura * 100).toFixed(0)}%
+              </span>
+            </div>
+
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={pesoColor}
+              onChange={(e) => onPesoColorChange!(parseFloat(e.target.value))}
+              className="w-full h-2 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 rounded-lg appearance-none cursor-pointer accent-purple-600"
+            />
+
+            <div className="flex justify-between text-xs text-purple-600 mt-2">
+              <span>100% Textura</span>
+              <span>50/50</span>
+              <span>100% Color</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,7 +7,11 @@ import { SearchButton } from "./SearchButton";
 import { CBIRControls } from "./CBIRControls";
 import { ResetButton } from "./ResetButton";
 import { SearchFeedback } from "./SearchFeedback";
-import type { CBIRVersion, CBIRVersionInfo } from "../types/cbirTypes";
+import type {
+  CBIRVersion,
+  CBIRVersionInfo,
+  CBIRMetric,
+} from "../types/cbirTypes";
 
 interface SearchPanelProps {
   inputRef: React.RefObject<HTMLInputElement | null>;
@@ -23,9 +27,13 @@ interface SearchPanelProps {
   topK: number;
   version: CBIRVersion;
   versionInfo: CBIRVersionInfo;
+  metrica?: CBIRMetric;
+  pesoColor?: number;
   onThresholdChange: (value: number) => void;
   onTopKChange: (value: number) => void;
   onVersionChange: (version: CBIRVersion) => void;
+  onMetricaChange?: (metrica: CBIRMetric) => void;
+  onPesoColorChange?: (peso: number) => void;
   showReset: boolean;
   onReset: () => void;
   uploadError: string | null;
@@ -47,9 +55,13 @@ export function SearchPanel({
   topK,
   version,
   versionInfo,
+  metrica,
+  pesoColor,
   onThresholdChange,
   onTopKChange,
   onVersionChange,
+  onMetricaChange,
+  onPesoColorChange,
   showReset,
   onReset,
   uploadError,
@@ -104,12 +116,16 @@ export function SearchPanel({
           topK={topK}
           selectedVersion={version}
           versionInfo={versionInfo}
+          metrica={metrica}
+          pesoColor={pesoColor}
           onThresholdChange={onThresholdChange}
           onTopKChange={onTopKChange}
           onVersionChange={onVersionChange}
+          onMetricaChange={onMetricaChange}
+          onPesoColorChange={onPesoColorChange}
         />
 
-        {/* Botón de búsqueda - AHORA AL FINAL */}
+        {/* Botón de búsqueda*/}
         <div className="mt-6">
           <SearchButton
             onClick={onSearch}

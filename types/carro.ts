@@ -8,5 +8,6 @@ export interface Carro {
   imagen: string;
   vector_caracteristicas_v1: number[];
   vector_caracteristicas_v2: number[];
+  vector_caracteristicas_v3: number[];
   url: string;
 }
