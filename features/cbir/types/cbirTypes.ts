@@ -1,9 +1,7 @@
 import type { Carro } from "@/types/carro";
 
 export type CBIRVersion = "v1" | "v2" | "v3";
-
 export type CBIRMetric = "euclidean" | "manhattan" | "cosine" | "hamming";
-
 export type HealthStatus = "checking" | "online" | "offline";
 
 // Extensión de Carro con información de similaridad (específico de CBIR)
@@ -26,7 +24,7 @@ export interface CBIRCarroResponse {
   similarity: number;
 }
 
-// Respuesta completa del endpoint CBIR
+// Respuesta completa del endpoint CBIR /search/v1|v2|v3
 export interface CBIRResponse {
   version: string;
   carros: CBIRCarroResponse[];
@@ -47,7 +45,7 @@ export interface CBIRSearchParams {
   pesoColor?: number;
 }
 
-// Resultado de búsqueda CBIR
+// Resultado de búsqueda CBIR (estructura interna)
 export interface CBIRSearchResult {
   carroIds: number[];
   similarityMap: Map<number, number>;
@@ -55,9 +53,14 @@ export interface CBIRSearchResult {
   totalPages: number;
 }
 
-// Respuesta del endpoint con métricas múltiples (V3)
+// Respuesta del endpoint con métricas múltiples (V3) /cbir/search/v3/metrics
 export interface CBIRMetricsResponse {
+  version: "v3";
   aggregation: string;
+  peso_color: number;
+  peso_textura: number;
+  total: number;
+  totalPages: number;
   metrics_breakdown: {
     euclidean: CBIRCarroResponse[];
     manhattan: CBIRCarroResponse[];

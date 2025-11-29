@@ -8,16 +8,17 @@ interface CarroCardProps {
   carro: CarroConSimilitud;
   showSimilarity?: boolean;
   onDetailClick?: (carro: CarroConSimilitud) => void;
+  compactLayout?: boolean;
 }
 
 export function CarroCard({
   carro,
   showSimilarity = false,
   onDetailClick,
+  compactLayout = false,
 }: CarroCardProps) {
   return (
     <div className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-      {/* Imagen - sin click */}
       <div className="relative h-56 w-full overflow-hidden bg-gray-200">
         <Image
           unoptimized
@@ -34,7 +35,6 @@ export function CarroCard({
         )}
       </div>
 
-      {/* Información */}
       <div className="p-6">
         <div className="flex items-start justify-between gap-2 mb-4">
           <div className="flex-1">
@@ -51,20 +51,39 @@ export function CarroCard({
         </div>
 
         <div className="border-t border-gray-100 pt-4">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Precio</p>
-              <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
-                {formatCurrency(carro.precio)}
-              </p>
+          {compactLayout ? (
+            // Layout para 4 columnas: botón abajo del todo
+            <div className="flex flex-col gap-3">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Precio</p>
+                <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
+                  {formatCurrency(carro.precio)}
+                </p>
+              </div>
+              <button
+                onClick={() => onDetailClick?.(carro)}
+                className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                Ver más
+              </button>
             </div>
-            <button
-              onClick={() => onDetailClick?.(carro)}
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
-            >
-              Ver más
-            </button>
-          </div>
+          ) : (
+            // Layout normal (catálogo)
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Precio</p>
+                <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
+                  {formatCurrency(carro.precio)}
+                </p>
+              </div>
+              <button
+                onClick={() => onDetailClick?.(carro)}
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                Ver más
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

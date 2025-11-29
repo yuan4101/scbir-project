@@ -43,7 +43,7 @@ export const CBIR_METRICS: Record<CBIRMetric, { name: string; description: strin
 };
 
 // Valores por defecto
-export const DEFAULT_THRESHOLD = 0.3;
-export const DEFAULT_TOP_K = 12;
+export const DEFAULT_THRESHOLD = 0.8;
+export const DEFAULT_TOP_K = 6;
 export const DEFAULT_METRICA: CBIRMetric = "euclidean";
-export const DEFAULT_PESO_COLOR = 0.7;
+export const DEFAULT_PESO_COLOR = 0.5;

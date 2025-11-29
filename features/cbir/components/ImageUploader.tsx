@@ -3,11 +3,12 @@
 import { ImageIcon } from "@/components/icons/ImageIcon";
 import { PlusIcon } from "@/components/icons/PlusIcon";
 import { TrashIcon } from "@/components/icons/TrashIcon";
+import { CBIRVersion } from "../types/cbirTypes";
 
 interface ImageUploaderProps {
   inputRef: React.RefObject<HTMLInputElement | null>;
   preview: string | null;
-  selectedVersion: string;
+  selectedVersion: CBIRVersion | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onDrop: (e: React.DragEvent<HTMLLabelElement>) => void;
   onClear: () => void;
@@ -78,17 +79,14 @@ export function ImageUploader({
                     Imagen cargada correctamente
                   </p>
                 </div>
-                <p className="text-xs text-gray-600 mb-2">
-                  Lista para buscar con{" "}
-                  <span className="font-semibold text-blue-600">
-                    {selectedVersion.toUpperCase()}
-                  </span>
-                </p>
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-md">
-                    Algoritmo {selectedVersion}
-                  </span>
-                </div>
+                {selectedVersion && (
+                  <p className="text-xs text-gray-600 mb-2">
+                    Lista para buscar con{" "}
+                    <span className="font-semibold text-blue-600">
+                      Algoritmo {selectedVersion.toUpperCase()}
+                    </span>
+                  </p>
+                )}
               </div>
               <button
                 onClick={onClear}

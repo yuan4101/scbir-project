@@ -1,15 +1,30 @@
 import { useState, useEffect } from "react";
-import type { HealthStatus } from "../types/cbirTypes";
 import { cbirService } from "../services/cbirService";
 
+type HealthStatusGlobal = "checking" | "online" | "partial" | "offline";
+
 export function useBackendHealth(intervalMs: number = 60000) {
-  const [healthStatus, setHealthStatus] = useState<HealthStatus>("checking");
+  const [healthStatusGlobal, setHealthStatusGlobal] =
+    useState<HealthStatusGlobal>("checking");
+  const [v12Online, setV12Online] = useState<boolean>(false);
+  const [v3Online, setV3Online] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(intervalMs / 1000);
 
   async function checkHealth() {
-    setHealthStatus("checking");
-    const isHealthy = await cbirService.checkHealth();
-    setHealthStatus(isHealthy ? "online" : "offline");
+    setHealthStatusGlobal("checking");
+
+    const { v12Healthy, v3Healthy } = await cbirService.checkHealth();
+
+    setV12Online(v12Healthy);
+    setV3Online(v3Healthy);
+
+    if (v12Healthy && v3Healthy) {
+      setHealthStatusGlobal("online");
+    } else if (!v12Healthy && !v3Healthy) {
+      setHealthStatusGlobal("offline");
+    } else {
+      setHealthStatusGlobal("partial");
+    }
   }
 
   useEffect(() => {
@@ -31,5 +46,5 @@ export function useBackendHealth(intervalMs: number = 60000) {
     };
   }, [intervalMs]);
 
-  return { healthStatus, countdown };
+  return { healthStatusGlobal, v12Online, v3Online, countdown };
 }
